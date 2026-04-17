@@ -6,5 +6,8 @@ const route = express.Router();
 module.exports = (app) => {
   app.use('/draw', route);
 
+  route.get('/prizes', drawController.prizes);
+  route.get('/winners', drawController.winners);
+  route.get('/history/:userId', drawController.history);
   route.post('/', drawController.draw);
 };

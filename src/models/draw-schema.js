@@ -4,5 +4,6 @@ module.exports = (db) =>
     db.Schema({
       userId: Number,
       date: String,
+      prize: String,
     })
   );

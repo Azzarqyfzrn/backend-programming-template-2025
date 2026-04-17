@@ -20,6 +20,50 @@ async function draw(request, response, next) {
   }
 }
 
+async function history(req, res, next) {
+  try {
+    const { userId } = req.params;
+
+    const result = await drawService.getHistory(userId);
+
+    return res.status(200).json({
+      message: 'History retrieved',
+      data: result,
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+async function prizes(req, res, next) {
+  try {
+    const data = await drawService.getPrizes();
+
+    res.status(200).json({
+      message: 'Prize list',
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function winners(req, res, next) {
+  try {
+    const data = await drawService.getWinnersList();
+
+    res.status(200).json({
+      message: 'Winners list',
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   draw,
+  history,
+  prizes,
+  winners,
 };
