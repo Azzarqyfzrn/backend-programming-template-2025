@@ -1,18 +1,139 @@
-# Backend Programming Template (2025)
+## Author
 
-## Development Setup
+Nama: Azzarqy Fizran M Nasrun
+NIM: 535250161
 
-1. Fork and clone this repository to your local computer.
-2. Open the project using VS Code.
-3. Install the recommended VS Code extensions: `ESLint` and `Prettier`.
-4. Copy and rename `.env.example` to `.env`. Open `.env` and change the database connection string.
-5. Run `npm install` to install the project dependencies.
-6. Run `npm run dev` to start the dev server.
-7. Test the endpoints in the API client app.
+# Backend Programming - Gacha System
 
-## Add New API Endpoints
+## Base URL
 
-1. Create a new database schema in `./src/models`.
-2. Create a new folder in `./src/api/components` (if needed). Remember to separate your codes to repositories, services, controllers, and routes.
-3. Add the new route in `./src/api/routes.js`.
-4. Test your new endpoints in the API client app.
+```
+http://localhost:5000/api
+```
+
+---
+
+## Endpoint
+
+### 1. Melakukan Undian (Draw)
+
+**Endpoint:**
+
+```
+
+POST /draw
+
+```
+
+**Deskripsi:**
+Digunakan untuk melakukan gacha/undian. Sistem akan:
+
+- Mengecek limit 5x per hari per user
+- Menentukan hasil menang/kalah secara acak
+- Memberikan hadiah jika menang dan kuota masih tersedia
+- Menyimpan histori percobaan ke database
+
+**Request Body:**
+
+```json
+{
+  "userId": 1
+}
+```
+
+**Response (Menang):**
+
+```json
+{
+  "message": "Selamat kamu menang!",
+  "data": {
+    "win": true,
+    "prize": "Voucher Rp100.000"
+  }
+}
+```
+
+**Response (Tidak Menang):**
+
+```json
+{
+  "message": "Belum beruntung",
+  "data": {
+    "win": false,
+    "prize": null
+  }
+}
+```
+
+**Response (Limit Tercapai):**
+
+```json
+{
+  "message": "Limit 5x per hari tercapai"
+}
+```
+
+---
+
+## Data Hadiah
+
+Hadiah disimpan di database MongoDB dengan struktur:
+
+```json
+{
+  "name": "Voucher Rp100.000",
+  "quota": 100,
+  "winners": 0
+}
+```
+
+**Keterangan:**
+
+- `quota` = jumlah maksimal pemenang
+- `winners` = jumlah pemenang saat ini
+- Hadiah hanya diberikan jika `winners < quota`
+
+---
+
+## ⚙️ Mekanisme Sistem
+
+1. User mengirim request ke endpoint `/draw`
+2. Sistem mengecek jumlah percobaan user hari ini
+3. Jika belum mencapai 5 kali:
+
+   - Sistem melakukan random (probabilitas menang)
+   - Jika menang:
+
+     - Sistem memilih hadiah yang masih tersedia
+     - Menambahkan jumlah pemenang
+
+4. Semua percobaan disimpan ke database
+
+---
+
+## 🗄️ Database
+
+Menggunakan MongoDB dengan collection:
+
+- `draws` → menyimpan histori percobaan user
+- `prizes` → menyimpan daftar hadiah dan kuota
+
+---
+
+## Teknologi
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+
+---
+
+## Fitur Utama
+
+- Limit 5x percobaan per hari
+- Sistem gacha (random win/lose)
+- Validasi kuota hadiah
+- Penyimpanan histori ke database
+
+---
