@@ -14,6 +14,12 @@ async function getAvailablePrize() {
   });
 }
 
+async function getAvailablePrizes() {
+  return Prize.find({
+    $expr: { $lt: ['$winners', '$quota'] },
+  });
+}
+
 async function incrementWinner(prizeId) {
   return Prize.updateOne({ _id: prizeId }, { $inc: { winners: 1 } });
 }
@@ -23,4 +29,5 @@ module.exports = {
   createAttempt,
   getAvailablePrize,
   incrementWinner,
+  getAvailablePrizes,
 };
